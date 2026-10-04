@@ -1,6 +1,6 @@
 # Numworks Storage
 
-<img src="image.png" width="400" alt="Screenshot"> 
+<img src="image.png" width="1200" alt="Screenshot"> 
 
 ## Use it
 
