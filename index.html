@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NumWorks Files</title>
+<link rel="icon" href="data:,">
+<style>
+:root{--bg:#fafaf9;--panel:#fff;--ink:#1c1917;--mut:#78716c;--line:#e7e5e4;--acc:#e8453c;--accink:#fff;--hover:#f5f5f4;--sel:#fef2f1;--r:10px}
+@media(prefers-color-scheme:dark){:root{--bg:#0c0a09;--panel:#171514;--ink:#f5f5f4;--mut:#a8a29e;--line:#292524;--hover:#211f1e;--sel:#2a1514}}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:flex;flex-direction:column}
+button{font:inherit;color:inherit;border:1px solid var(--line);background:var(--panel);padding:7px 12px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.12s}
+button:hover:not(:disabled){background:var(--hover)}button:disabled{opacity:.4;cursor:default}
+button.primary{background:var(--acc);border-color:var(--acc);color:var(--accink)}button.primary:hover:not(:disabled){filter:brightness(1.08);background:var(--acc)}
+button.danger{color:var(--acc)}button.ghost{border-color:transparent;background:transparent}
+header{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--panel);flex-wrap:wrap}
+.brand{font-weight:650;letter-spacing:-.01em;margin-right:auto;display:flex;align-items:center;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--mut)}.on .dot{background:#22c55e}
+#status{color:var(--mut);font-size:13px;display:flex;align-items:center;gap:6px;margin-right:8px}
+main{flex:1;display:grid;grid-template-columns:280px 1fr;min-height:0}
+aside{border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0;background:var(--panel)}
+.ah{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+#list{flex:1;overflow:auto;padding:0 8px}
+.it{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer}
+.it:hover{background:var(--hover)}.it.sel{background:var(--sel)}
+.it b{font-weight:550;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.it small{color:var(--mut)}.tag{font-size:11px;padding:1px 6px;border-radius:5px;background:var(--hover);color:var(--mut)}
+.mem{padding:12px;border-top:1px solid var(--line);font-size:12px;color:var(--mut)}
+.bar{height:4px;border-radius:2px;background:var(--line);margin-top:6px;overflow:hidden}.bar i{display:block;height:100%;background:var(--acc);width:0}
+section{display:flex;flex-direction:column;min-width:0;min-height:0}
+.bh{display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+#nm{font:600 16px ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--hover);border:1px solid var(--line);border-radius:8px;padding:9px 12px;color:inherit;flex:1 1 380px;min-width:220px;max-width:680px}
+#nm:hover{border-color:var(--mut)}#nm:focus{border-color:var(--acc);outline:none}
+.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}.seg button{border:0;border-radius:0;padding:6px 12px}.seg button.on{background:var(--hover);font-weight:600;color:var(--acc)}
+label.sw{display:flex;align-items:center;gap:6px;color:var(--mut);font-size:13px;cursor:pointer}
+.sp{flex:1}
+textarea{flex:1;resize:none;border:0;outline:0;padding:16px;background:transparent;color:inherit;font:13.5px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;tab-size:4;white-space:pre;overflow:auto}
+.foot{padding:6px 16px;border-top:1px solid var(--line);color:var(--mut);font-size:12px}
+.empty{margin:auto;text-align:center;color:var(--mut);max-width:380px;padding:24px}
+.empty h2{color:var(--ink);margin:0 0 6px;font-size:18px}
+.hidden{display:none!important}
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--ink);padding:20px;width:min(400px,92vw)}
+dialog::backdrop{background:#0006}dialog h3{margin:0 0 6px}dialog p{margin:0 0 16px;color:var(--mut)}
+dialog .row{display:flex;gap:8px;justify-content:flex-end}
+#pdlg{width:min(480px,92vw)}.tools{display:flex;gap:8px;margin-bottom:10px}.tools button{padding:5px 10px;font-size:13px}
+#pl{max-height:48vh;overflow:auto;border:1px solid var(--line);border-radius:8px;margin-bottom:16px}
+#pl label{display:flex;align-items:center;gap:10px;padding:8px 12px;cursor:pointer}#pl label:hover{background:var(--hover)}#pl label+label{border-top:1px solid var(--line)}
+#pl b{flex:1;font:550 13px ui-monospace,SFMono-Regular,Menlo,monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#pl small{color:var(--mut)}
+#pl .tag.w{background:var(--sel);color:var(--acc)}
+.hx{flex:1;display:flex;gap:18px;overflow:auto;padding:16px;font:13.5px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;align-items:flex-start}
+.hx pre{margin:0;font:inherit;color:var(--mut);flex:none;user-select:none}#hasc{user-select:text}
+#hex{flex:none;width:47ch;padding:0;overflow:hidden;font:inherit;white-space:pre;text-transform:uppercase}
+#toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:99px;opacity:0;pointer-events:none;transition:.2s;font-size:13px;max-width:90vw;z-index:9}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:700px){main{grid-template-columns:1fr;grid-template-rows:200px 1fr}aside{border-right:0;border-bottom:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">⬡ NumWorks Files</div>
+  <div id="status"><span class="dot"></span><span id="st"></span></div>
+  <button id="bConn" class="primary" data-i18n="connect"></button>
+  <button id="bBackup" disabled data-i18n="backupB"></button>
+  <button id="bRestore" disabled data-i18n="restoreB"></button>
+  <input type="file" id="fRestore" accept=".nws,.tar" hidden>
+  <div class="seg" id="lang" title="Langue / Language"><button data-l="fr">FR</button><button data-l="en">EN</button></div>
+</header>
+<main>
+  <aside>
+    <div class="ah"><span><span data-i18n="files"></span> <span id="cnt"></span></span><span><button class="ghost" id="bNew" data-i18n-title="newT" disabled>＋</button><button class="ghost" id="bImp" data-i18n-title="impT" disabled><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3m0 0L7 8m5-5 5 5M4 17v3h16v-3"/></svg></button><input type="file" id="fImp" hidden><button class="ghost" id="bRef" data-i18n-title="refresh" disabled>↻</button></span></div>
+    <div id="list"></div>
+    <div class="mem"><span id="memt">—</span><div class="bar"><i id="memb"></i></div></div>
+  </aside>
+  <section>
+    <div id="none" class="empty"><h2></h2><p></p></div>
+    <div id="ed" class="hidden" style="display:contents">
+      <div class="bh">
+        <input id="nm" spellcheck="false" autocomplete="off" data-i18n-title="nmT">
+        <label class="sw" id="autoW"><input type="checkbox" id="auto"> <span data-i18n="auto"></span></label>
+        <span class="sp"></span>
+        <div class="seg"><button id="mTxt" data-i18n="text" data-i18n-title="textT"></button><button id="mHex" data-i18n-title="hexT">Hex</button></div>
+        <button id="bDl" data-i18n="dl"></button>
+        <button id="bDel" class="danger" data-i18n="del"></button>
+        <button id="bSave" class="primary" disabled data-i18n="save"></button>
+      </div>
+      <textarea id="code" spellcheck="false"></textarea>
+      <div class="hx hidden" id="hx"><pre id="hoff"></pre><textarea id="hex" spellcheck="false" wrap="off"></textarea><pre id="hasc"></pre></div>
+      <div class="foot" id="foot"></div>
+    </div>
+  </section>
+</main>
+<dialog id="dlg"><form method="dialog"><h3 id="dt"></h3><p id="dx"></p><div class="row"><button value="cancel" data-i18n="cancel"></button><button id="dok" value="ok"></button></div></form></dialog>
+<dialog id="pdlg"><form method="dialog"><h3 id="pt"></h3><p id="px"></p>
+<div class="tools"><button type="button" id="pAll" data-i18n="all"></button><button type="button" id="pNone" data-i18n="none"></button></div>
+<div id="pl"></div><div class="row"><button value="cancel" data-i18n="cancel"></button><button id="pok" value="ok" class="primary"></button></div></form></dialog>
+<div id="toast"></div>
+
+<script>var WebDFU=(()=>{var w=(t,e)=>()=>{try{return e||t((e={exports:{}}).exports,e),e.exports}catch(r){throw e=0,r}};var p=w((N,T)=>{"use strict";var u=class t{static get DETACH(){return 0}static get DNLOAD(){return 1}static get UPLOAD(){return 2}static get GETSTATUS(){return 3}static get CLRSTATUS(){return 4}static get GETSTATE(){return 5}static get ABORT(){return 6}static get appIDLE(){return 0}static get appDETACH(){return 1}static get dfuIDLE(){return 2}static get dfuDNLOAD_SYNC(){return 3}static get dfuDNBUSY(){return 4}static get dfuDNLOAD_IDLE(){return 5}static get dfuMANIFEST_SYNC(){return 6}static get dfuMANIFEST(){return 7}static get dfuMANIFEST_WAIT_RESET(){return 8}static get dfuUPLOAD_IDLE(){return 9}static get dfuERROR(){return 10}static get STATUS_OK(){return 0}static findDeviceDfuInterfaces(e){let r=[];for(let s of e.configurations)for(let o of s.interfaces)for(let n of o.alternates)if(n.interfaceClass===254&&n.interfaceSubclass===1&&(n.interfaceProtocol===1||n.interfaceProtocol===2)){let i={configuration:s,interface:o,alternate:n,name:n.interfaceName};r.push(i)}return r}static findAllDfuInterfaces(){return navigator.usb.getDevices().then(e=>{let r=[];for(let s of e){let o=t.findDeviceDfuInterfaces(s);for(let n of o)r.push(new t.Device(s,n))}return r})}static parseDeviceDescriptor(e){return{bLength:e.getUint8(0),bDescriptorType:e.getUint8(1),bcdUSB:e.getUint16(2,!0),bDeviceClass:e.getUint8(4),bDeviceSubClass:e.getUint8(5),bDeviceProtocol:e.getUint8(6),bMaxPacketSize:e.getUint8(7),idVendor:e.getUint16(8,!0),idProduct:e.getUint16(10,!0),bcdDevice:e.getUint16(12,!0),iManufacturer:e.getUint8(14),iProduct:e.getUint8(15),iSerialNumber:e.getUint8(16),bNumConfigurations:e.getUint8(17)}}static parseConfigurationDescriptor(e){let r=new DataView(e.buffer.slice(9)),s=t.parseSubDescriptors(r);return{bLength:e.getUint8(0),bDescriptorType:e.getUint8(1),wTotalLength:e.getUint16(2,!0),bNumInterfaces:e.getUint8(4),bConfigurationValue:e.getUint8(5),iConfiguration:e.getUint8(6),bmAttributes:e.getUint8(7),bMaxPower:e.getUint8(8),descriptors:s}}static parseInterfaceDescriptor(e){return{bLength:e.getUint8(0),bDescriptorType:e.getUint8(1),bInterfaceNumber:e.getUint8(2),bAlternateSetting:e.getUint8(3),bNumEndpoints:e.getUint8(4),bInterfaceClass:e.getUint8(5),bInterfaceSubClass:e.getUint8(6),bInterfaceProtocol:e.getUint8(7),iInterface:e.getUint8(8),descriptors:[]}}static parseFunctionalDescriptor(e){return{bLength:e.getUint8(0),bDescriptorType:e.getUint8(1),bmAttributes:e.getUint8(2),wDetachTimeOut:e.getUint16(3,!0),wTransferSize:e.getUint16(5,!0),bcdDFUVersion:e.getUint16(7,!0)}}static parseSubDescriptors(e){let i=e,a=[],c,l=!1;for(;i.byteLength>2;){let f=i.getUint8(0),g=i.getUint8(1),d=new DataView(i.buffer.slice(0,f));if(g===4)c=t.parseInterfaceDescriptor(d),c.bInterfaceClass===254&&c.bInterfaceSubClass===1?l=!0:l=!1,a.push(c);else if(l&&g===33){let S=t.parseFunctionalDescriptor(d);a.push(S),c.descriptors.push(S)}else{let S={bLength:f,bDescriptorType:g,data:d};a.push(S),c&&c.descriptors.push(S)}i=new DataView(i.buffer.slice(f))}return a}};u.Device=class{constructor(t,e){this.device_=t,this.settings=e,this.intfNumber=e.interface.interfaceNumber,this.dnload=this.download,this.clrStatus=this.clearStatus}logDebug(t){console.debug(t)}logInfo(t){console.info(t)}logWarning(t){console.warn(t)}logError(t){console.error(t)}logProgress(t,e){typeof e>"u"?this.logDebug(t):this.logDebug(t+"/"+e)}async open(){await this.device_.open();let t=this.settings.configuration.configurationValue;(this.device_.configuration===null||this.device_.configuration.configurationValue!==t)&&await this.device_.selectConfiguration(t);let e=this.settings.interface.interfaceNumber;this.device_.configuration.interfaces[e].claimed||await this.device_.claimInterface(e);let r=this.settings.alternate.alternateSetting,s=this.device_.configuration.interfaces[e];(s.alternate===null||s.alternate.alternateSetting!==r)&&await this.device_.selectAlternateInterface(e,r)}async close(){try{await this.device_.close()}catch(t){console.log(t)}}readDeviceDescriptor(){return this.device_.controlTransferIn({requestType:"standard",recipient:"device",request:6,value:256,index:0},18).then(s=>s.status==="ok"?Promise.resolve(s.data):Promise.reject(s.status))}async readStringDescriptor(t,e){typeof e>"u"&&(e=0);let r=6,o=3<<8|t,n={requestType:"standard",recipient:"device",request:r,value:o,index:e};var i=await this.device_.controlTransferIn(n,1);if(i.status==="ok"){let a=i.data.getUint8(0);if(i=await this.device_.controlTransferIn(n,a),i.status==="ok"){let c=(a-2)/2,l=[];for(let f=0;f<c;f++)l.push(i.data.getUint16(2+f*2,!0));return e===0?l:String.fromCharCode.apply(String,l)}}throw new Error(`Failed to read string descriptor ${t}: ${i.status}`)}async readInterfaceNames(){let e={},r=new Set;for(let o=0;o<this.device_.configurations.length;o++){let n=await this.readConfigurationDescriptor(o),i=u.parseConfigurationDescriptor(n),a=i.bConfigurationValue;e[a]={};for(let c of i.descriptors)c.bDescriptorType===4&&(c.bInterfaceNumber in e[a]||(e[a][c.bInterfaceNumber]={}),e[a][c.bInterfaceNumber][c.bAlternateSetting]=c.iInterface,c.iInterface>0&&r.add(c.iInterface))}let s={};for(let o of r)try{s[o]=await this.readStringDescriptor(o,1033)}catch(n){console.log(n),s[o]=null}for(let o in e)for(let n in e[o])for(let i in e[o][n]){let a=e[o][n][i];e[o][n][i]=s[a]}return e}readConfigurationDescriptor(t){let s=512|t;return this.device_.controlTransferIn({requestType:"standard",recipient:"device",request:6,value:s,index:0},4).then(o=>{if(o.status==="ok"){let n=o.data.getUint16(2,!0);return this.device_.controlTransferIn({requestType:"standard",recipient:"device",request:6,value:s,index:0},n)}else return Promise.reject(o.status)}).then(o=>o.status==="ok"?Promise.resolve(o.data):Promise.reject(o.status))}requestOut(t,e,r=0){return this.device_.controlTransferOut({requestType:"class",recipient:"interface",request:t,value:r,index:this.intfNumber},e).then(s=>s.status==="ok"?Promise.resolve(s.bytesWritten):Promise.reject(s.status),s=>Promise.reject("ControlTransferOut failed: "+s))}requestIn(t,e,r=0){return this.device_.controlTransferIn({requestType:"class",recipient:"interface",request:t,value:r,index:this.intfNumber},e).then(s=>s.status==="ok"?Promise.resolve(s.data):Promise.reject(s.status),s=>(console.error(s),Promise.reject("ControlTransferIn failed: "+s)))}detach(){return this.requestOut(u.DETACH,void 0,1e3)}async waitDisconnected(t){let e=this,r=this.device_;return new Promise(function(s,o){let n;t>0&&(n=setTimeout(o,t));function i(a){a.device===r&&(t>0&&clearTimeout(n),e.disconnected=!0,navigator.usb.removeEventListener("disconnect",i),a.stopPropagation(),s(e))}navigator.usb.addEventListener("disconnect",i)})}download(t,e){return this.requestOut(u.DNLOAD,t,e)}upload(t,e){return this.requestIn(u.UPLOAD,t,e)}clearStatus(){return this.requestOut(u.CLRSTATUS)}getStatus(){return this.requestIn(u.GETSTATUS,6).then(t=>Promise.resolve({status:t.getUint8(0),pollTimeout:t.getUint32(1,!0)&16777215,state:t.getUint8(4)}),t=>Promise.reject("DFU GETSTATUS failed: "+t))}getState(){return this.requestIn(u.GETSTATE,1).then(t=>Promise.resolve(t.getUint8(0)),t=>Promise.reject("DFU GETSTATE failed: "+t))}abort(){return this.requestOut(u.ABORT)}async abortToIdle(){await this.abort();let t=await this.getState();if(t===u.dfuERROR&&(await this.clearStatus(),t=await this.getState()),t!==u.dfuIDLE)throw new Error("Failed to return to idle state after abort: state "+t.state)}async do_upload(t,e=1/0,r=0){let s=r,o=[],n=0;this.logInfo("Copying data from DFU device to browser"),this.logProgress(0);let i,a;do a=Math.min(t,e-n),i=await this.upload(a,s++),this.logDebug("Read "+i.byteLength+" bytes"),i.byteLength>0&&(o.push(i),n+=i.byteLength),Number.isFinite(e)?this.logProgress(n,e):this.logProgress(n);while(n<e&&i.byteLength===a);return n===e&&await this.abortToIdle(),this.logInfo(`Read ${n} bytes`),new Blob(o,{type:"application/octet-stream"})}async poll_until(t){let e=await this.getStatus(),r=this;function s(o){return new Promise(function(n,i){r.logDebug("Sleeping for "+o+"ms"),setTimeout(n,o)})}for(;!t(e.state)&&e.state!==u.dfuERROR;)await s(e.pollTimeout),e=await this.getStatus();return e}poll_until_idle(t){return this.poll_until(e=>e===t)}async do_download(t,e,r){let s=0,o=e.byteLength,n=0;for(this.logInfo("Copying data from browser to DFU device"),this.logProgress(s,o);s<o;){let i=o-s,a=Math.min(i,t),c=0,l;try{c=await this.download(e.slice(s,s+a),n++),this.logDebug("Sent "+c+" bytes"),l=await this.poll_until_idle(u.dfuDNLOAD_IDLE)}catch(f){throw new Error("Error during DFU download: "+f)}if(l.status!==u.STATUS_OK)throw new Error(`DFU DOWNLOAD failed state=${l.state}, status=${l.status}`);this.logDebug("Wrote "+c+" bytes"),s+=c,this.logProgress(s,o)}this.logDebug("Sending empty block");try{await this.download(new ArrayBuffer([]),n++)}catch(i){throw new Error("Error during final DFU download: "+i)}if(this.logInfo("Wrote "+s+" bytes"),this.logInfo("Manifesting new firmware"),r){let i;try{if(i=await this.poll_until(a=>a===u.dfuIDLE||a===u.dfuMANIFEST_WAIT_RESET),i.state===u.dfuMANIFEST_WAIT_RESET&&this.logDebug("Device transitioned to MANIFEST_WAIT_RESET even though it is manifestation tolerant"),i.status!==u.STATUS_OK)throw new Error(`DFU MANIFEST failed state=${i.state}, status=${i.status}`)}catch(a){if(a.endsWith("ControlTransferIn failed: NotFoundError: Device unavailable.")||a.endsWith("ControlTransferIn failed: NotFoundError: The device was disconnected."))this.logWarning("Unable to poll final manifestation status");else throw new Error("Error during DFU manifest: "+a)}}else try{let i=await this.getStatus();this.logDebug(`Final DFU status: state=${i.state}, status=${i.status}`)}catch(i){this.logDebug("Manifest GET_STATUS poll error: "+i)}try{await this.device_.reset()}catch(i){if(i==="NetworkError: Unable to reset the device."||i==="NotFoundError: Device unavailable."||i==="NotFoundError: The device was disconnected.")this.logDebug("Ignored reset error");else throw new Error("Error during reset for manifestation: "+i)}}};T.exports=u});var I=w((x,E)=>{"use strict";var D=p(),h=class extends D{static get GET_COMMANDS(){return 0}static get SET_ADDRESS(){return 33}static get ERASE_SECTOR(){return 65}static parseMemoryDescriptor(e){let r=e.indexOf("/");if(!e.startsWith("@")||r===-1)throw new Error(`Not a DfuSe memory descriptor: "${e}"`);let s=e.substring(1,r).trim(),o=e.substring(r),n=[],i={" ":1,B:1,K:1024,M:1048576},a=/\/\s*(0x[0-9a-fA-F]{1,8})\s*\/(\s*[0-9]+\s*\*\s*[0-9]+\s?[ BKM]\s*[abcdefg]\s*,?\s*)+/g,c;for(;c=a.exec(o);){let l=/([0-9]+)\s*\*\s*([0-9]+)\s?([ BKM])\s*([abcdefg])\s*,?\s*/g,f=parseInt(c[1],16),g;for(;g=l.exec(c[0]);){let d={},S=parseInt(g[1],10),m=parseInt(g[2])*i[g[3]],b=g[4].charCodeAt(0)-97+1;d.start=f,d.sectorSize=m,d.end=f+m*S,d.readable=(b&1)!==0,d.erasable=(b&2)!==0,d.writable=(b&4)!==0,n.push(d),f+=m*S}}return{name:s,segments:n}}};h.Device=class extends D.Device{constructor(t,e){super(t,e),this.memoryInfo=null,this.startAddress=NaN,e.name&&(this.memoryInfo=h.parseMemoryDescriptor(e.name))}async dfuseCommand(t,e,r){typeof e>"u"&&typeof r>"u"&&(e=0,r=1);let s={0:"GET_COMMANDS",33:"SET_ADDRESS",65:"ERASE_SECTOR"},o=new ArrayBuffer(r+1),n=new DataView(o);if(n.setUint8(0,t),r===1)n.setUint8(1,e);else if(r===4)n.setUint32(1,e,!0);else throw new Error("Don't know how to handle data of len "+r);try{await this.download(o,0)}catch(a){throw new Error("Error during special DfuSe command "+s[t]+":"+a)}if((await this.poll_until(a=>a!==D.dfuDNBUSY)).status!==D.STATUS_OK)throw new Error("Special DfuSe command "+s[t]+" failed")}getSegment(t){if(!this.memoryInfo||!this.memoryInfo.segments)throw new Error("No memory map information available");for(let e of this.memoryInfo.segments)if(e.start<=t&&t<e.end)return e;return null}getSectorStart(t,e){if(typeof e>"u"&&(e=this.getSegment(t)),!e)throw new Error(`Address ${t.toString(16)} outside of memory map`);let r=Math.floor((t-e.start)/e.sectorSize);return e.start+r*e.sectorSize}getSectorEnd(t,e){if(typeof e>"u"&&(e=this.getSegment(t)),!e)throw new Error(`Address ${t.toString(16)} outside of memory map`);let r=Math.floor((t-e.start)/e.sectorSize);return e.start+(r+1)*e.sectorSize}getFirstWritableSegment(){if(!this.memoryInfo||!this.memoryInfo.segments)throw new Error("No memory map information available");for(let t of this.memoryInfo.segments)if(t.writable)return t;return null}getMaxReadSize(t){if(!this.memoryInfo||!this.memoryInfo.segments)throw new Error("No memory map information available");let e=0;for(let r of this.memoryInfo.segments)if(r.start<=t&&t<r.end)if(r.readable)e+=r.end-t;else return 0;else if(r.start===t+e)if(r.readable)e+=r.end-r.start;else break;return e}async erase(t,e){let r=this.getSegment(t),s=this.getSectorStart(t,r),o=this.getSectorEnd(t+e-1),n=0,i=o-s;for(i>0&&this.logProgress(n,i);s<o;){if(r.end<=s&&(r=this.getSegment(s)),!r.erasable){n=Math.min(n+r.end-s,i),s=r.end,this.logProgress(n,i);continue}let a=Math.floor((s-r.start)/r.sectorSize),c=r.start+a*r.sectorSize;this.logDebug(`Erasing ${r.sectorSize}B at 0x${c.toString(16)}`),await this.dfuseCommand(h.ERASE_SECTOR,c,4),s=c+r.sectorSize,n+=r.sectorSize,this.logProgress(n,i)}}async do_download(t,e,r){if(!this.memoryInfo||!this.memoryInfo.segments)throw new Error("No memory map available");this.logInfo("Erasing DFU device memory");let s=0,o=e.byteLength,n=this.startAddress;isNaN(n)?(n=this.memoryInfo.segments[0].start,this.logWarning("Using inferred start address 0x"+n.toString(16))):this.getSegment(n)===null&&this.logError(`Start address 0x${n.toString(16)} outside of memory map bounds`),await this.erase(n,o),this.logInfo("Copying data from browser to DFU device");let i=n;for(;s<o;){let a=o-s,c=Math.min(a,t),l=0,f;try{await this.dfuseCommand(h.SET_ADDRESS,i,4),this.logDebug(`Set address to 0x${i.toString(16)}`),l=await this.download(e.slice(s,s+c),2),this.logDebug("Sent "+l+" bytes"),f=await this.poll_until_idle(D.dfuDNLOAD_IDLE),i+=c}catch(g){throw new Error("Error during DfuSe download: "+g)}if(f.status!==D.STATUS_OK)throw new Error(`DFU DOWNLOAD failed state=${f.state}, status=${f.status}`);this.logDebug("Wrote "+l+" bytes"),s+=l,this.logProgress(s,o)}if(this.logInfo(`Wrote ${s} bytes`),r){this.logInfo("Manifesting new firmware");try{await this.dfuseCommand(h.SET_ADDRESS,n,4),await this.download(new ArrayBuffer,2)}catch(a){throw new Error("Error during DfuSe manifestation: "+a)}try{await this.poll_until(a=>a===D.dfuMANIFEST)}catch(a){this.logError(a)}}}async do_upload(t,e){let r=this.startAddress;return isNaN(r)?(r=this.memoryInfo.segments[0].start,this.logWarning("Using inferred start address 0x"+r.toString(16))):this.getSegment(r)===null&&this.logWarning(`Start address 0x${r.toString(16)} outside of memory map bounds`),this.logInfo(`Reading up to 0x${e.toString(16)} bytes starting at 0x${r.toString(16)}`),await this.getState()!==D.dfuIDLE&&await this.abortToIdle(),await this.dfuseCommand(h.SET_ADDRESS,r,4),await this.abortToIdle(),await super.do_upload(t,e,2)}};E.exports=h});var A=w((R,y)=>{var _=p(),U=I();y.exports={DFU:_,DFUse:U}});return A();})();
+</script>
+<script>
+const $=s=>document.querySelector(s),enc=new TextEncoder(),dec=new TextDecoder(),{DFU,DFUse}=WebDFU;
+const META='_nws_meta.json';
+let dev=null,xfer=2048,info=null,recs=[],cur=null,dirty=false;
+
+/* ---------- Langue / i18n ---------- */
+const I18N={
+fr:{connect:'Connecter',backupB:'⤓ Sauvegarder',restoreB:'⤒ Restaurer',files:'Fichiers',newT:'Nouveau script',impT:'Importer un fichier',refresh:'Actualiser',
+ nmT:'Nom du fichier (avec extension)',auto:'Import auto',text:'Texte',textT:'Éditeur de texte',hexT:'Éditeur hexadécimal',dl:'Télécharger',del:'Supprimer',save:'Enregistrer',
+ cancel:'Annuler',all:'Tout sélectionner',none:'Tout désélectionner',
+ on:'Connectée',off:'Non connectée',err:'Erreur : ',b:'o',kb:'Ko',used:'utilisés',
+ emptyH:'Gère les fichiers de ta calculatrice',emptyP:"Branche-la en USB, vérifie qu'elle affiche « Calculator connected », puis clique sur Connecter.<br>Fonctionne avec Chrome, Edge ou Chromium.",
+ noUsb:"WebUSB n'est pas disponible : utilise Chrome, Edge ou Chromium (pas Firefox/Safari), depuis https ou un fichier local.",
+ selFile:'Sélectionne un fichier',noFile:'Aucun fichier',selFileP:'Choisis un fichier dans la liste pour le lire ou le modifier.',noFileP:'Crée un script avec le bouton ＋ ou restaure une sauvegarde.',
+ busy:"Calculatrice occupée : ferme les autres onglets/applis qui l'utilisent (my.numworks.com, KhiCAS, Xcas…), débranche/rebranche le câble, puis réessaie.",
+ shortRead:'Lecture incomplète à 0x',memFmt:'format mémoire non reconnu',platErr:'Infos plateforme illisibles (pas une NumWorks ?)',noMem:'Mémoire de la calculatrice insuffisante',
+ lines:'lignes',bytes:'octets',dirty:' · modifications non enregistrées',
+ bad:n=>n+" caractère(s) non textuel(s) « \uFFFD » — édite en Hex pour préserver les octets d'origine",
+ hexBad:'Hexadécimal invalide (chiffres 0-9 A-F et espaces uniquement, nombre pair de chiffres)',hexInv:'Hexadécimal invalide',hexMode:'Hexadécimal invalide : corrige-le avant de changer de mode',
+ unsavedT:'Modifications non enregistrées',unsavedPick:'Les changements du fichier en cours seront perdus.',discard:'Abandonner',lost:'Elles seront perdues.',cont:'Continuer',
+ lostRestore:'Elles seront perdues si le fichier ouvert est remplacé.',
+ refT:'Actualiser ?',refX:'Les modifications non enregistrées seront perdues.',refreshed:'Actualisé',read:n=>n+' fichier(s) lus',
+ fname:'fichier',needExt:'Le nom doit contenir une extension (ex. : script.py)',exists:n=>'« '+n+' » existe déjà',
+ extT:"Changer l'extension ?",extX:(a,b)=>'« .'+a+' » deviendra « .'+b+' ». Le contenu est conservé octet pour octet, mais la calculatrice peut ne plus reconnaître le fichier.',change:'Changer',saved:'Enregistré sur la calculatrice',
+ delT:'Supprimer ce fichier ?',delX:n=>'« '+n+' » sera effacé de la calculatrice. Pense à faire une sauvegarde avant.',deleted:n=>n+' supprimé',
+ replT:'Remplacer le fichier ?',replX:n=>'« '+n+' » existe déjà sur la calculatrice et sera écrasé.',replace:'Remplacer',replaced:'remplacé',imported:'importé',
+ noBackup:'Aucun fichier à sauvegarder',backupN:'Sauvegarder',backupX:"Choisis les fichiers à inclure dans l'archive .nws.",backedUp:n=>n+' fichier(s) sauvegardés',
+ badArc:'Archive vide ou invalide',restoreN:'Restaurer',restoreX:'Les fichiers cochés remplacent ceux de même nom sur la calculatrice. Les autres fichiers de la calculatrice ne sont pas touchés.',
+ over:'écrase',new:'nouveau',restored:(n,o,a)=>n+' restauré(s) · '+o+' écrasé(s) · '+a+' ajouté(s)',disc:'Calculatrice déconnectée'},
+en:{connect:'Connect',backupB:'⤓ Back up',restoreB:'⤒ Restore',files:'Files',newT:'New script',impT:'Import a file',refresh:'Refresh',
+ nmT:'File name (with extension)',auto:'Auto import',text:'Text',textT:'Text editor',hexT:'Hex editor',dl:'Download',del:'Delete',save:'Save',
+ cancel:'Cancel',all:'Select all',none:'Deselect all',
+ on:'Connected',off:'Not connected',err:'Error: ',b:'B',kb:'KB',used:'used',
+ emptyH:"Manage your calculator's files",emptyP:'Plug it in via USB, make sure it shows “Calculator connected”, then click Connect.<br>Works with Chrome, Edge or Chromium.',
+ noUsb:'WebUSB is not available: use Chrome, Edge or Chromium (not Firefox/Safari), over https or from a local file.',
+ selFile:'Select a file',noFile:'No files',selFileP:'Pick a file from the list to read or edit it.',noFileP:'Create a script with the ＋ button or restore a backup.',
+ busy:'Calculator busy: close other tabs/apps using it (my.numworks.com, KhiCAS, Xcas…), unplug and replug the cable, then try again.',
+ shortRead:'Incomplete read at 0x',memFmt:'unrecognized memory format',platErr:'Unreadable platform info (not a NumWorks?)',noMem:'Not enough calculator memory',
+ lines:'lines',bytes:'bytes',dirty:' · unsaved changes',
+ bad:n=>n+' non-text character(s) “\uFFFD” — edit in Hex to keep the original bytes',
+ hexBad:'Invalid hex (digits 0-9 A-F and spaces only, even number of digits)',hexInv:'Invalid hex',hexMode:'Invalid hex: fix it before switching mode',
+ unsavedT:'Unsaved changes',unsavedPick:'Changes to the current file will be lost.',discard:'Discard',lost:'They will be lost.',cont:'Continue',
+ lostRestore:'They will be lost if the open file is replaced.',
+ refT:'Refresh?',refX:'Unsaved changes will be lost.',refreshed:'Refreshed',read:n=>n+' file(s) read',
+ fname:'file',needExt:'The name must include an extension (e.g. script.py)',exists:n=>'“'+n+'” already exists',
+ extT:'Change the extension?',extX:(a,b)=>'“.'+a+'” will become “.'+b+'”. The content is kept byte for byte, but the calculator may no longer recognize the file.',change:'Change',saved:'Saved to the calculator',
+ delT:'Delete this file?',delX:n=>'“'+n+'” will be erased from the calculator. Remember to back up first.',deleted:n=>n+' deleted',
+ replT:'Replace the file?',replX:n=>'“'+n+'” already exists on the calculator and will be overwritten.',replace:'Replace',replaced:'replaced',imported:'imported',
+ noBackup:'No files to back up',backupN:'Back up',backupX:'Choose the files to include in the .nws archive.',backedUp:n=>n+' file(s) backed up',
+ badArc:'Empty or invalid archive',restoreN:'Restore',restoreX:'Checked files replace those with the same name on the calculator. Other files on the calculator are left untouched.',
+ over:'overwrites',new:'new',restored:(n,o,a)=>n+' restored · '+o+' overwritten · '+a+' added',disc:'Calculator disconnected'}};
+let lang='fr';try{lang=localStorage.getItem('nwlang')||(navigator.language||'').slice(0,2)}catch(e){}
+if(lang!=='fr')lang='en';
+const t=(k,...a)=>{const v=I18N[lang][k];return typeof v==='function'?v(...a):v};
+function emptyTxt(){const h=$('#none').querySelector('h2'),p=$('#none').querySelector('p');
+  if(!navigator.usb){h.textContent=t('emptyH');p.textContent=t('noUsb');return}
+  if(dev){h.textContent=recs.length?t('selFile'):t('noFile');p.textContent=recs.length?t('selFileP'):t('noFileP')}
+  else{h.textContent=t('emptyH');p.innerHTML=t('emptyP')}}
+function applyLang(){
+  document.documentElement.lang=lang;
+  document.querySelectorAll('[data-i18n]').forEach(e=>e.textContent=t(e.dataset.i18n));
+  document.querySelectorAll('[data-i18n-title]').forEach(e=>e.title=t(e.dataset.i18nTitle));
+  document.querySelectorAll('#lang button').forEach(b=>b.classList.toggle('on',b.dataset.l===lang));
+  setConn();renderList();emptyTxt();if(cur)stat();
+}
+document.querySelectorAll('#lang button').forEach(b=>b.onclick=()=>{lang=b.dataset.l;try{localStorage.setItem('nwlang',lang)}catch(e){}applyLang()});
+
+/* ---------- UI helpers ---------- */
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),3200)}
+function ask(title,text,ok,danger){return new Promise(res=>{$('#dt').textContent=title;$('#dx').textContent=text;const b=$('#dok');b.textContent=ok;b.className=danger?'danger':'primary';const d=$('#dlg');d.returnValue='';d.onclose=()=>res(d.returnValue==='ok');d.showModal()})}
+function save(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5e3)}
+async function run(fn){document.body.style.cursor='wait';try{await fn()}catch(e){console.error(e);toast(t('err')+(e.message||e))}finally{document.body.style.cursor=''}}
+const kb=n=>n<1024?n+' '+t('b'):(n/1024).toFixed(1)+' '+t('kb');
+
+const fsize=r=>r.type==='py'?enc.encode(r.code).length:r.raw.length;
+function pickFiles(title,text,items,ok){return new Promise(res=>{
+  $('#pt').textContent=title;$('#px').textContent=text;const pl=$('#pl');pl.innerHTML='';
+  const boxes=items.map(it=>{const l=document.createElement('label');l.innerHTML='<input type="checkbox" checked><b></b><span class="tag"></span><small></small>';
+    l.querySelector('b').textContent=it.label;l.querySelector('small').textContent=it.size;
+    const t=l.querySelector('.tag');if(it.tag){t.textContent=it.tag;if(it.warn)t.classList.add('w')}else t.remove();
+    pl.appendChild(l);return l.firstChild});
+  const b=$('#pok'),upd=()=>{const n=boxes.filter(x=>x.checked).length;b.disabled=!n;b.textContent=ok+' ('+n+')'};
+  boxes.forEach(x=>x.onchange=upd);
+  $('#pAll').onclick=()=>{boxes.forEach(x=>x.checked=true);upd()};$('#pNone').onclick=()=>{boxes.forEach(x=>x.checked=false);upd()};
+  upd();const d=$('#pdlg');d.returnValue='';
+  d.onclose=()=>res(d.returnValue==='ok'?boxes.map((x,i)=>x.checked?i:-1).filter(i=>i>=0):null);d.showModal()})}
+
+/* ---------- Connexion (WebUSB / DFU, d'après Numworks.js de M4x1m3, MIT) ---------- */
+async function openAlt(usb,ifs,idx){
+  let d=new DFU.Device(usb,ifs[idx]);
+  try{await d.open()}catch(e){try{await usb.close()}catch(_){}
+    if(/claim/i.test(e.message))throw new Error(t("busy"));
+    throw e}
+  try{const cd=DFU.parseConfigurationDescriptor(await d.readConfigurationDescriptor(0));
+    const f=cd.bConfigurationValue===d.settings.configuration.configurationValue&&cd.descriptors.find(x=>x.bDescriptorType===0x21&&'bcdDFUVersion'in x);
+    if(f){xfer=f.wTransferSize;
+      if((f.bcdDFUVersion===0x100||f.bcdDFUVersion===0x11a)&&d.settings.alternate.interfaceProtocol===2)d=new DFUse.Device(d.device_,d.settings)}}catch(e){}
+  d.logDebug=d.logInfo=d.logWarning=d.logProgress=()=>{};d.logError=console.error;
+  return d;
+}
+async function rd(addr,len){dev.startAddress=addr;const b=new Uint8Array(await(await dev.do_upload(xfer,len)).arrayBuffer());
+  if(b.length<len)throw new Error(t('shortRead')+addr.toString(16));return b.subarray(0,len)}
+const hex=b=>Array.from(b,x=>x.toString(16).padStart(2,'0')).join(' ');
+function chainOk(b,o,size){const dv=new DataView(b.buffer,b.byteOffset+o,size);let p=0;
+  while(p+2<=size){const s=dv.getUint16(p,true);if(!s)return true;if(s<4||p+s>size)return false;p+=s}return false}
+/* Epsilon récent (N0110/N0115/N0120 slots A/B) : un « SlotInfo » est placé au tout début de la SRAM et pointe
+   vers l'en-tête userland, qui contient l'adresse et la taille du stockage. Sinon : recherche de la signature du stockage. */
+async function modernInfo(base,len){
+  const s=await rd(base,16),v=new DataView(s.buffer,s.byteOffset,16);
+  if(v.getUint32(0,true)===0xEFEEDBBA&&v.getUint32(12,true)===0xEFEEDBBA){
+    try{const h=await rd(v.getUint32(8,true),48),hv=new DataView(h.buffer,h.byteOffset,48);
+      if(hv.getUint32(0,true)===0xDEC0EDFE&&hv.getUint32(44,true)===0xDEC0EDFE)return{addr:hv.getUint32(12,true),size:hv.getUint32(16,true),upsilon:false}}
+    catch(e){console.warn('en-tête userland illisible',e)}}
+  const ram=await rd(base,len),dv=new DataView(ram.buffer,ram.byteOffset,ram.byteLength),M=0xBADD0BEE;
+  for(let i=0;i+8<=len;i+=4)if(dv.getUint32(i,false)===M)
+    for(let j=i+8;j+4<=len;j+=4)if(dv.getUint32(j,false)===M){const size=j-i-4;if(chainOk(ram,i+4,size))return{addr:base+i,size,upsilon:false};break}
+  throw new Error(t('memFmt')+' (SRAM@0x'+base.toString(16)+' : '+hex(s)+')');
+}
+async function connect(){
+  const usb=await navigator.usb.requestDevice({filters:[{vendorId:0x0483,productId:0xa291}]});
+  const ifs=DFU.findDeviceDfuInterfaces(usb);
+  if(ifs.some(i=>i.name===null)){const t=new DFU.Device(usb,ifs[0]);await t.device_.open();const m=await t.readInterfaceNames();await t.close();
+    for(const i of ifs)if(i.name===null)i.name=m[i.configuration.configurationValue][i.interface.interfaceNumber][i.alternate.alternateSetting]}
+  const si=ifs.findIndex(i=>/^@?SRAM/i.test(i.name||'')),log=[];
+  if(si>=0){
+    dev=await openAlt(usb,ifs,si);
+    const seg=dev.memoryInfo&&dev.memoryInfo.segments.find(x=>x.readable&&x.writable);
+    if(seg){
+      dev.memoryInfo.segments.push({start:0x08000000,end:0x08200000,sectorSize:4096,readable:true,erasable:false,writable:false},
+        {start:0x90000000,end:0x91000000,sectorSize:65536,readable:true,erasable:false,writable:false});
+      try{info=await modernInfo(seg.start,seg.end-seg.start);return}catch(e){log.push(e.message);console.warn(e)}}
+    try{await dev.close()}catch(_){}dev=null;
+  }
+  dev=await openAlt(usb,ifs,0);
+  if(dev.memoryInfo)dev.memoryInfo.segments.unshift({start:0x20000000,sectorSize:1024,end:0x20040000,readable:true,erasable:false,writable:true});
+  try{info=platform(await rd(0x080001c4,0x64))}
+  catch(e){const m=e.message+(log.length?' — '+log.join(' ; '):'');try{await dev.close()}catch(_){}dev=null;throw new Error(m)}
+}
+function platform(buf){
+  const dv=new DataView(buf.buffer?buf.buffer.slice(buf.byteOffset,buf.byteOffset+buf.byteLength):buf),u=(o,le)=>dv.getUint32(o,le);
+  if(u(0,false)!==0xF00DC0DE)throw new Error(t('platErr'));
+  if(u(0x1C,false)!==0xF00DC0DE){let off=0;for(const o of[8,16,32])if(u(0x1C+o,false)===0xF00DC0DE){off=o;break}
+    return{addr:u(0x14+off,true),size:u(0x18+off,true),upsilon:false}}
+  return{addr:u(0x14,true),size:u(0x18,true),upsilon:u(0x48,false)===0x69737055&&u(0x60,false)===0x69737055};
+}
+
+/* ---------- Format du stockage (magic 0xBADD0BEE, enregistrements "nom.ext") ---------- */
+function mkRec(name,type,data){const r={name,type};
+  if(type==='py'){const hl=info.upsilon?3:1;r.head=new Uint8Array(hl);r.head.set(data.subarray(0,hl));let c=hl;while(c<data.length&&data[c])c++;r.code=dec.decode(data.subarray(hl,c))}
+  else r.raw=data;return r}
+function parse(b){
+  if(b.length<6||b[0]!==0xBA||b[1]!==0xDD||b[2]!==0x0B||b[3]!==0xEE)return[];
+  const dv=new DataView(b.buffer,b.byteOffset,b.byteLength),out=[];let o=4;
+  while(o+2<=b.length){const sz=dv.getUint16(o,true);if(!sz||o+sz>b.length)break;
+    let e=o+2;while(e<o+sz&&b[e])e++;
+    const full=dec.decode(b.subarray(o+2,e)),data=b.slice(e+1,o+sz),k=full.lastIndexOf('.');
+    const r=mkRec(k<0?full:full.slice(0,k),k<0?'':full.slice(k+1),data);
+    out.push(r);o+=sz}
+  return out;
+}
+function body(r){if(r.type!=='py')return r.raw;const c=enc.encode(r.code),o=new Uint8Array(r.head.length+c.length+1);o.set(r.head);o.set(c,r.head.length);return o}
+const fname=r=>r.type?r.name+'.'+r.type:r.name;
+function encode(list,max=Infinity){
+  const ps=[new Uint8Array([0xBA,0xDD,0x0B,0xEE])];let n=4;
+  for(const r of list){const nm=enc.encode(fname(r)),d=body(r),sz=3+nm.length+d.length,p=new Uint8Array(sz);
+    new DataView(p.buffer).setUint16(0,sz,true);p.set(nm,2);p.set(d,3+nm.length);ps.push(p);n+=sz}
+  ps.push(new Uint8Array(2));n+=2;
+  if(n>max)throw new Error(t('noMem'));
+  const out=new Uint8Array(n);let o=0;for(const p of ps){out.set(p,o);o+=p.length}return out;
+}
+async function readAll(){dev.startAddress=info.addr;recs=parse(new Uint8Array(await(await dev.do_upload(xfer,info.size+8)).arrayBuffer()))}
+async function writeAll(list){const b=encode(list,info.size);dev.startAddress=info.addr;await dev.do_download(xfer,b.buffer,false);recs=list}
+
+/* ---------- Archive .nws (tar) ---------- */
+function tarMake(files){
+  const bl=[],oct=(n,l)=>n.toString(8).padStart(l-1,'0')+'\0';
+  for(const f of files){const h=new Uint8Array(512),w=(s,o)=>h.set(enc.encode(s),o);
+    w(f.name,0);w('0000644\0',100);w('0000000\0',108);w('0000000\0',116);w(oct(f.data.length,12),124);w(oct(Date.now()/1000|0,12),136);w('        ',148);w('0',156);w('ustar\0',257);w('00',263);
+    let s=0;for(const x of h)s+=x;w(s.toString(8).padStart(6,'0')+'\0 ',148);
+    bl.push(h,f.data);const p=(512-f.data.length%512)%512;if(p)bl.push(new Uint8Array(p))}
+  bl.push(new Uint8Array(1024));return new Blob(bl,{type:'application/x-tar'});
+}
+function tarRead(b){
+  const out=[];let o=0;
+  while(o+512<=b.length){const h=b.subarray(o,o+512);if(!h[0])break;
+    const s=(a,e)=>dec.decode(h.subarray(a,e)).split('\0')[0],size=parseInt(s(124,136).trim()||'0',8),t=h[156];o+=512;
+    if(t===48||t===0)out.push({name:s(0,100).split('/').pop(),data:b.slice(o,o+size)});
+    o+=Math.ceil(size/512)*512}
+  return out;
+}
+
+/* ---------- Rendu ---------- */
+function setConn(){
+  const c=!!dev;document.body.classList.toggle('on',c);
+  $('#st').textContent=c?t('on')+(info.upsilon?' · Upsilon':''):t('off');
+  $('#bConn').classList.toggle('hidden',c);
+  for(const id of['bBackup','bRestore','bNew','bImp','bRef'])$('#'+id).disabled=!c;
+}
+function render(){renderList();editor()}
+function renderList(){
+  const L=$('#list');L.innerHTML='';$('#cnt').textContent=recs.length?'('+recs.length+')':'';
+  recs.forEach(r=>{const d=document.createElement('div');d.className='it'+(r===cur?' sel':'');
+    const sz=r.type==='py'?enc.encode(r.code).length:r.raw.length;
+    d.innerHTML='<b></b>'+(r.type!=='py'?'<span class="tag"></span>':'')+'<small>'+kb(sz)+'</small>';
+    d.firstChild.textContent=fname(r);if(r.type!=='py')d.querySelector('.tag').textContent=r.type||'?';
+    d.onclick=()=>pick(r);L.appendChild(d)});
+  if(dev){const u=encode(recs).length;$('#memt').textContent=kb(u)+' / '+kb(info.size)+' '+t('used');$('#memb').style.width=Math.min(100,u/info.size*100)+'%'}
+}
+function editor(){
+  const has=!!cur;$('#none').classList.toggle('hidden',has);$('#ed').classList.toggle('hidden',!has);
+  if(!has){emptyTxt();return}
+  const py=cur.type==='py';
+  $('#nm').value=fname(cur);fitNm();
+  buf=py?body(cur):cur.raw.slice();
+  $('#autoW').classList.toggle('hidden',!py);$('#auto').checked=py&&buf[0]!==0;
+  showBuf();
+  dirty=false;stat();
+}
+function stat(){
+  if(!cur)return;const d=dirty?t('dirty'):'';
+  if(mode==='text'){const v=$('#code').value,bad=(v.match(/\uFFFD/g)||[]).length;$('#bSave').disabled=!dirty;
+    $('#foot').textContent=v.split('\n').length+' '+t('lines')+' · '+kb(enc.encode(v).length)+d+(bad?' · '+t('bad',bad):'');return}
+  const b=parseHex($('#hex').value);$('#bSave').disabled=!dirty||!b;
+  $('#foot').textContent=b?b.length+' '+t('bytes')+d:t('hexBad');
+}
+/* ---- tampon d'octets partagé entre l'éditeur texte et l'éditeur hex ---- */
+let mode='text',buf=null,textDirty=false;
+const decT=new TextDecoder('utf-8',{ignoreBOM:true}),hdl=()=>info.upsilon?3:1;
+function toText(b){const py=cur.type==='py',st=py?hdl():0;let e=b.length;if(py){e=st;while(e<b.length&&b[e])e++}
+  return decT.decode(b.subarray(st,e)).replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g,'\uFFFD')}
+function fromText(t){const c=enc.encode(t);if(cur.type!=='py')return c;const h=hdl(),o=new Uint8Array(h+c.length+1);o.set(buf.subarray(0,h));o.set(c,h);return o}
+function syncBuf(){if(mode==='hex'){const b=parseHex($('#hex').value);if(!b)return false;buf=b;return true}
+  if(textDirty){buf=fromText($('#code').value);textDirty=false}return true}
+function showBuf(){
+  $('#code').classList.toggle('hidden',mode==='hex');$('#hx').classList.toggle('hidden',mode==='text');
+  $('#mTxt').classList.toggle('on',mode==='text');$('#mHex').classList.toggle('on',mode==='hex');
+  if(mode==='hex'){$('#hex').value=hexFmt(buf);drawHex()}else{$('#code').value=toText(buf);textDirty=false}
+  stat();
+}
+function setMode(m){if(m===mode)return;if(!syncBuf()){toast(t('hexMode'));return}mode=m;showBuf()}
+const fitNm=()=>{};
+/* ---- éditeur hexadécimal ---- */
+const hexFmt=b=>{const o=[];for(let i=0;i<b.length;i+=16)o.push(Array.from(b.subarray(i,i+16),x=>x.toString(16).padStart(2,'0')).join(' '));return o.join('\n')};
+function parseHex(t){if(/[^0-9a-fA-F\s]/.test(t))return null;const h=t.replace(/\s+/g,'');if(h.length%2)return null;
+  const b=new Uint8Array(h.length/2);for(let i=0;i<b.length;i++)b[i]=parseInt(h.substr(i*2,2),16);return b}
+function drawHex(){
+  const t=$('#hex');t.style.height='auto';t.style.height=t.scrollHeight+'px';
+  let off=0;const O=[],A=[];
+  for(const ln of t.value.split('\n')){const d=ln.replace(/[^0-9a-f]/gi,'');let a='';
+    for(let i=0;i+1<d.length;i+=2){const c=parseInt(d.substr(i,2),16);a+=c>=32&&c<127?String.fromCharCode(c):'.'}
+    O.push(off.toString(16).padStart(6,'0'));A.push(a);off+=d.length>>1}
+  $('#hoff').textContent=O.join('\n');$('#hasc').textContent=A.join('\n');
+}
+async function pick(r){if(r===cur)return;if(dirty&&!await ask(t('unsavedT'),t('unsavedPick'),t('discard'),true))return;cur=r;render()}
+
+/* ---------- Actions ---------- */
+$('#bConn').onclick=()=>run(async()=>{await connect();await readAll();setConn();cur=null;render();toast(t('read',recs.length))});
+$('#bRef').onclick=()=>run(async()=>{if(dirty&&!await ask(t('refT'),t('refX'),t('refresh'),true))return;await readAll();cur=null;render();toast(t('refreshed'))});
+$('#code').oninput=()=>{dirty=true;textDirty=true;stat()};
+$('#hex').oninput=()=>{dirty=true;drawHex();stat()};
+$('#hex').onblur=()=>{const b=parseHex($('#hex').value);if(b){$('#hex').value=hexFmt(b);drawHex()}};
+$('#mTxt').onclick=()=>setMode('text');$('#mHex').onclick=()=>setMode('hex');
+$('#auto').onchange=()=>{if(!syncBuf()){$('#auto').checked=!$('#auto').checked;toast(t('hexInv'));return}
+  buf=buf.slice();buf[0]=+$('#auto').checked;if(mode==='hex')showBuf();dirty=true;stat()};
+$('#nm').oninput=()=>{fitNm();dirty=true;stat()};
+$('#code').onkeydown=e=>{if(e.key==='Tab'&&!e.shiftKey&&!$('#code').readOnly){e.preventDefault();document.execCommand('insertText',false,'    ')}};
+addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();if(!$('#bSave').disabled)$('#bSave').click()}});
+$('#bSave').onclick=()=>run(async()=>{
+  const old=cur;if(!syncBuf())throw new Error(t('hexInv'));
+  const full=$('#nm').value.trim(),k=full.lastIndexOf('.');
+  const type=(k<0?'':full.slice(k+1)).toLowerCase().replace(/[^a-z0-9]/g,'');
+  if(!type&&old.type)throw new Error(t('needExt'));
+  const raw=k<0?full:full.slice(0,k);
+  const name=(type==='py'?raw.toLowerCase().replace(/[^a-z0-9_]/g,'_'):raw.replace(/[.\x00-\x1f\/]/g,'_'))||t('fname');
+  if(recs.some(r=>r!==old&&r.name===name&&r.type===type))throw new Error(t('exists',name+(type?'.'+type:'')));
+  if(type!==old.type&&!await ask(t('extT'),t('extX',old.type,type),t('change'),true))return;
+  const nr=mkRec(name,type,buf),next=recs.map(r=>r===old?nr:r);
+  await writeAll(next);cur=nr;render();toast(t('saved'))});
+$('#bDel').onclick=()=>run(async()=>{
+  if(!await ask(t('delT'),t('delX',fname(cur)),t('del'),true))return;
+  const n=fname(cur);await writeAll(recs.filter(r=>r!==cur));cur=null;render();toast(t('deleted',n))});
+$('#bDl').onclick=()=>{const py=cur.type==='py';save(new Blob([py?cur.code:cur.raw]),fname(cur))};
+$('#bNew').onclick=()=>run(async()=>{
+  if(dirty&&!await ask(t('unsavedT'),t('lost'),t('cont'),true))return;
+  let i=1;while(recs.some(r=>r.type==='py'&&r.name==='script'+i))i++;
+  const r={name:'script'+i,type:'py',code:'',head:new Uint8Array(info.upsilon?3:1)};
+  await writeAll([...recs,r]);cur=r;render();$('#code').focus()});
+$('#bImp').onclick=()=>$('#fImp').click();
+$('#fImp').onchange=e=>run(async()=>{
+  const f=e.target.files[0];e.target.value='';if(!f)return;
+  if(dirty&&!await ask(t('unsavedT'),t('lost'),t('cont'),true))return;
+  const k=f.name.lastIndexOf('.'),type=(k<0?'':f.name.slice(k+1)).toLowerCase().replace(/[^a-z0-9]/g,'');
+  let name=k<0?f.name:f.name.slice(0,k);
+  name=(type==='py'?name.toLowerCase().replace(/[^a-z0-9_]/g,'_'):name.replace(/[.\x00-\x1f\/]/g,'_'))||t('fname');
+  const bytes=new Uint8Array(await f.arrayBuffer()),i=recs.findIndex(x=>x.name===name&&x.type===type);
+  const r=type==='py'?{name,type,head:i>=0&&recs[i].head?recs[i].head:new Uint8Array(info.upsilon?3:1),code:dec.decode(bytes).replace(/\r\n?/g,'\n')}:{name,type,raw:bytes};
+  if(i>=0&&!await ask(t('replT'),t('replX',fname(r)),t('replace'),true))return;
+  const next=recs.slice();if(i>=0)next[i]=r;else next.push(r);
+  await writeAll(next);cur=r;render();toast(fname(r)+' '+t(i>=0?'replaced':'imported'))});
+$('#bBackup').onclick=()=>run(async()=>{
+  if(!recs.length)throw new Error(t('noBackup'));
+  const idx=await pickFiles(t('backupN'),t('backupX'),recs.map(r=>({label:fname(r),size:kb(fsize(r))})),t('backupN'));
+  if(!idx)return;
+  const meta={},files=[];
+  for(const i of idx){const r=recs[i],n=fname(r);if(r.type==='py'){meta[n]=Array.from(r.head);files.push({name:n,data:enc.encode(r.code)})}else files.push({name:n,data:r.raw})}
+  files.push({name:META,data:enc.encode(JSON.stringify(meta))});
+  save(tarMake(files),'numworks-'+new Date().toISOString().slice(0,10)+'.nws');toast(t('backedUp',idx.length))});
+$('#bRestore').onclick=()=>$('#fRestore').click();
+$('#fRestore').onchange=e=>run(async()=>{
+  const f=e.target.files[0];e.target.value='';if(!f)return;
+  const files=tarRead(new Uint8Array(await f.arrayBuffer())),mf=files.find(x=>x.name===META);
+  const meta=mf?JSON.parse(dec.decode(mf.data)):{},list=[];
+  for(const x of files){if(x.name===META)continue;const k=x.name.lastIndexOf('.');if(k<0)continue;
+    const name=x.name.slice(0,k),type=x.name.slice(k+1);
+    if(type==='py'){const h=meta[x.name]||[0],head=new Uint8Array(info.upsilon?3:1);head[0]=h[0]?1:0;if(info.upsilon&&h.length===3)head.set(h);list.push({name,type,head,code:dec.decode(x.data)})}
+    else list.push({name,type,raw:x.data})}
+  if(!list.length)throw new Error(t('badArc'));
+  const same=(a,b)=>a.name===b.name&&a.type===b.type;
+  const idx=await pickFiles(t('restoreN'),t('restoreX'),
+    list.map(r=>{const ex=recs.some(x=>same(x,r));return{label:fname(r),size:kb(fsize(r)),tag:ex?t('over'):t('new'),warn:ex}}),t('restoreN'));
+  if(!idx)return;
+  if(dirty&&!await ask(t('unsavedT'),t('lostRestore'),t('cont'),true))return;
+  const next=recs.slice();let over=0;
+  for(const i of idx){const r=list[i],k=next.findIndex(x=>same(x,r));if(k>=0){next[k]=r;over++}else next.push(r)}
+  const key=cur&&fname(cur);await writeAll(next);cur=next.find(r=>fname(r)===key)||null;render();
+  toast(t('restored',idx.length,over,idx.length-over))});
+navigator.usb&&navigator.usb.addEventListener('disconnect',e=>{if(dev&&dev.device_===e.device){dev=null;recs=[];cur=null;setConn();render();$('#memt').textContent='—';$('#memb').style.width=0;toast(t('disc'))}});
+if(!navigator.usb)$('#bConn').disabled=true;
+render();applyLang();
+window.addEventListener('beforeunload',e=>{if(dirty)e.preventDefault()});
+</script>
+</body>
+</html>
