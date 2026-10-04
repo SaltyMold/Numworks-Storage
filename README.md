@@ -1,5 +1,7 @@
 # Numworks Storage
 
+<img src="image.png" width="400" alt="Screenshot"> 
+
 ## Use it
 
 Easily manage your Numworks storage via a simple web interface.<br>
